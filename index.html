@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MPD 5 GBT - Majelis Pimpinan Daerah 5</title>
+<link href="https://googleapis.com" rel="stylesheet">
+<style>
+:root{
+--navy:#0B1F3A;
+--gold:#C8A44D;
+--light:#f5f7fb;
+--dark:#222;
+}
+*{box-sizing:border-box;scroll-behavior: smooth;}
+body{margin:0;font-family:'Inter',sans-serif;background:#fff;color:var(--dark);line-height:1.6}
+.topbar{background:var(--navy);color:#fff;padding:8px 20px;font-size:14px;text-align:right}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 40px;background:#fff;position:sticky;top:0;box-shadow:0 2px 10px rgba(0,0,0,.08);z-index:100}
+.logo{font-weight:700;color:var(--navy);font-family:'Montserrat',sans-serif}
+
+/* Navigation & Hamburger Styling (Pure CSS) */
+nav {display: flex;align-items: center;}
+nav a{margin:0 12px;text-decoration:none;color:var(--navy);font-weight:600;transition: color 0.3s;}
+nav a:hover{color:var(--gold)}
+.menu-toggle {display: none;flex-direction: column;cursor: pointer;gap: 6px;}
+.menu-toggle span {width: 25px;height: 3px;background: var(--navy);border-radius: 2px;}
+#menu-checkbox {display: none;}
+
+/* Hero Section */
+.hero{
+min-height:70vh;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;
+background:
+linear-gradient(rgba(11,31,58,.75), rgba(11,31,58,.8)),
+radial-gradient(circle at top right, rgba(200,164,77,.4), transparent 30%),
+linear-gradient(135deg,#0B1F3A,#173765);
+padding:60px 20px}
+.hero h1{font-family:'Montserrat',sans-serif;font-size:46px;max-width:900px;margin:0 auto 20px}
+.hero p{font-size:20px;color:#f0e8cf;margin: 5px 0 25px}
+.btn{display:inline-block;margin:8px;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;transition:0.3s}
+.btn-primary{background:var(--gold);color:#111}
+.btn-primary:hover{background:#b29040}
+.btn-outline{border:2px solid #fff;color:#fff}
+.btn-outline:hover{background:#fff;color:var(--navy)}
+
+/* Sections Layout */
+.section{padding:8px 8% 60px}
+.section-title{font-family:'Montserrat',sans-serif;color:var(--navy);font-size:28px;margin-top:50px;border-bottom:3px solid var(--gold);display:inline-block;padding-bottom:5px;margin-bottom:25px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px}
+.card{background:#fff;border-radius:12px;padding:25px;box-shadow:0 4px 16px rgba(0,0,0,.06);border-top:4px solid transparent;transition:0.3s}
+.card:hover{transform:translateY(-5px);box-shadow:0 6px 20px rgba(0,0,0,.1)}
+.card-accent{border-top-color:var(--gold)}
+.badge{color:var(--gold);font-weight:700;display:block;margin-bottom:10px;font-size:18px}
+
+/* Gaya Dropdown Direktori (JS-Supported) */
+.accordion-item { margin-bottom: 15px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,.06); }
+.accordion-label { display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; background: #fff; border-top: 4px solid var(--gold); font-weight: 700; color: var(--navy); font-size: 18px; cursor: pointer; transition: background 0.3s; user-select: none; }
+.accordion-label:hover { background: #fafafa; }
+.accordion-label::after { content: '▼'; font-size: 12px; color: var(--gold); transition: transform 0.3s; }
+.accordion-content { display: none; background: #fff; padding: 10px 25px 25px; }
+
+/* Status Aktif Ketika Diklik */
+.accordion-item.active .accordion-content { display: block; }
+.accordion-item.active .accordion-label::after { transform: rotate(180deg); }
+
+/* Gaya Tabel di Dalam Dropdown */
+.table-dir { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 10px; }
+.table-dir th, .table-dir td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #eee; }
+.table-dir th { background: #f5f7fb; color: var(--navy); }
+.table-dir tr:hover { background: #fdfdfd; }
+
+/* Form Contact Styling */
+.contact-container {display: grid;grid-template-columns: 1fr 1fr;gap: 40px;}
+.form-group {margin-bottom: 18px;}
+.form-group label {display: block;margin-bottom: 6px;font-weight: 500;}
+.form-control {width: 100%;padding: 12px;border: 1px solid #ccc;border-radius: 6px;font-family: 'Inter', sans-serif;font-size: 15px;}
+.form-control:focus {outline: none;border-color: var(--navy);box-shadow: 0 0 5px rgba(11,31,58,0.2)}
+.btn-submit {background: var(--navy);color: #fff;border: none;padding: 12px 30px;font-weight: 600;cursor: pointer;border-radius: 6px;width: 100%;transition: 0.3s;}
+.btn-submit:hover {background: #173765;}
+
+.footer{background:var(--navy);color:#fff;padding:40px 20px;text-align:center;font-size:15px}
+.footer p {margin: 5px 0;}
+
+/* Responsive Breakpoints */
+@media(max-width:900px){
+.contact-container {grid-template-columns: 1fr;}
+}
+@media(max-width:768px){
+header{padding:16px 20px;}
+.hero h1{font-size:32px}
+.menu-toggle {display: flex;}
+nav {
+display: none;
+position: absolute;
+top: 100%;
+left: 0;
+right: 0;
+background: #fff;
+flex-direction: column;
+padding: 20px;
+box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+border-top: 1px solid #eee;
+}
+nav a {margin: 10px 0;width: 100%;text-align: center;}
+#menu-checkbox:checked ~ nav {display: flex;}
+.section {padding: 8px 4% 40px;}
+}
+@media(max-width: 600px) { .table-dir th, .table-dir td { padding: 8px 5px; font-size: 13px; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">MPD 5 GBT • Sulsel • Sulbar • Sulteng • Sultra</div>
+
+<header>
+<div class="logo">MPD 5 Gereja Beth-El Tabernakel</div>
+<!-- Hamburger Menu Input & Label -->
+<input type="checkbox" id="menu-checkbox">
+<label for="menu-checkbox" class="menu-toggle">
+<span></span>
+<span></span>
+<span></span>
+</label>
+<nav>
+<a href="#">Home</a>
+<a href="#profil">Profil</a>
+<a href="#direktori">Direktori Gereja</a>
+<a href="#event">Event</a>
+<a href="#surat">Dok Resmi</a>
+<a href="#kontak">Hubungi Kami</a>
+</nav>
+</header>
+
+<section class="hero">
+<div>
+<h1>“Berbahagialah Pembawa Damai”</h1>
+<p><em>Blessed are the peacemakers</em> • Tema GBT 2026</p>
+<p>Majelis Pimpinan Daerah 5 Gereja Beth‑El Tabernakel</p>
+<a class="btn btn-primary" href="#direktori">Direktori Gereja</a>
+<a class="btn btn-outline" href="#event">Kalender Event</a>
+</div>
+</section>
+
+<!-- Beranda / Sambutan -->
+<section class="section">
+<h2 class="section-title">Sambutan Ketua MPD 5</h2>
+<div class="card card-accent">
+<p><strong>Pdt. Nehemia Tangkin, S.Th.</strong></p>
+<p>Selamat datang di website resmi MPD 5 Gereja Beth‑El Tabernakel. Kiranya website ini menjadi sarana informasi, komunikasi, dan persekutuan pelayanan bagi seluruh jemaat dan pelayan Tuhan di wilayah MPD 5.</p>
+</div>
+</section>
+
+<!-- 1. HALAMAN PROFIL COMPLETE -->
+<section id="profil" class="section" style="background:#f5f7fb">
+<h2 class="section-title">Profil MPD 5</h2>
+<div class="card">
+<h3>Visi & Misi</h3>
+<p><strong>Visi:</strong> Menjadi wadah persekutuan gereja yang berdampak, berakar kuat dalam kebenaran firman Tuhan, dan aktif membawa damai sejahtera di tengah masyarakat Sulawesi.</p>
+<p><strong>Misi:</strong></p>
+<ul>
+<li>Meningkatkan kualitas kerohanian dan kapasitas pelayanan para hamba Tuhan GBT.</li>
+<li>Membuka pos-pos pekabaran injil baru di wilayah Sulsel, Sulbar, Sulteng, dan Sultra.</li>
+<li>Membangun hubungan sinergi yang harmonis antar gembala dan jemaat lokal.</li>
+</ul>
+
+<h3>Struktur Kepengurusan Inti</h3>
+<p>
+<strong>Ketua:</strong> Pdt. Nehemia Tangkin, S.Th.<br>
+<strong>Waket:</strong> Pdt. Daniel Kali, S.Th.<br>
+<strong>Sekretaris:</strong> Pdt. Yelpian Rumande, S.Th.<br>
+<strong>Wasek:</strong> Pdt. Daud Pasang, S.Th.<br>
+<strong>Bendahara:</strong> Pdt. Orliana Sangka, S.Th.<br>
+<strong>Waben:</strong> Pdt. Andreas Purwono, S.Th.
+</p>
+
+<h3>Koordinator Daerah (Korda)</h3>
+<ul>
+<li><strong>Korda Usia Emas:</strong> Pdt. Maria Rudas, S.Th.</li>
+<li><strong>Korda WBT:</strong> Pdt. Marlina Padalimbong, S.Th.</li>
+<li><strong>Korda Pemuda:</strong> Pdt. Micha Tandi Liling, S.Th.</li>
+<li><strong>Korda Anak:</strong> Pdt. Marina Payung, S.Th.</li>
+<li><strong>Korda Pembinaan:</strong> Pdt. Lukas Patiri, S.Th.</li>
+<li><strong>Korda Litbang:</strong> Pdt. Arianto Thomassoyan, Am.Th.</li>
+<li><strong>Korda Misi:</strong> Pdt. Esra Arung</li>
+<li><strong>Korda Infokom:</strong> Pdm. Harun Witono, S.Th.</li>
+</ul>
+</div>
+</section>
+
+<!-- 2. HALAMAN DIREKTORI GEREJA COMPLETE -->
+<!-- DIREKTORI GEREJA (DROPDOWN DENGAN DATA GAMBAR FINAL) -->
+<section id="direktori" class="section">
+<h2 class="section-title">Direktori Gereja</h2>
+<p>Silakan klik pada nama provinsi di bawah ini untuk membuka/menutup daftar lengkap GBT jemaat lokal:</p>
+
+<div class="accordion-container">
+
+  <!-- SULAWESI SELATAN -->
+  <div class="accordion-item">
+    <div class="accordion-label" onclick="toggleAccordion(this)">Sulawesi Selatan</div>
+    <div class="accordion-content">
+      <table class="table-dir">
+        <thead>
+          <tr>
+            <th style="width: 30%;">Nama Jemaat</th>
+            <th style="width: 45%;">Alamat</th>
+            <th style="width: 25%;">Gembala Sidang</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>GBT Jemaat Indonesia</strong></td>
+            <td>Jl. G. Salahutu III No.18, Mardekaya Utara</td>
+            <td>Pdt. Markus Kusmanto</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Getsemani Makassar</strong></td>
+            <td>Komp. Crisant, Jl. Pandang Raya No.18 Blc</td>
+            <td>Pdt. Ayub Andi Tomasoyan</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Syalom Makassar</strong></td>
+            <td>Paccerakkang, Kec. Biringkanaya, Kota Makassar</td>
+            <td>Pdt. Andi Tomasoyan</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Kristus Pembela</strong></td>
+            <td>Jl. Sakura No.3, Paropo, Panakkukang, Makassar</td>
+            <td>Pdt. Maria Rudas</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Kristus Bangkit Bolu</strong></td>
+            <td>Tallunglipu Matalo, Tallunglipu, North Toraja</td>
+            <td>Pdt. Nehemia Tangkin</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Filadelfia Maleku</strong></td>
+            <td>Jl. Pahlawan 6 Maleku Mangkutana Luwu Timur</td>
+            <td>Pdt. Daniel Kali'</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Rehoboth Palopo</strong></td>
+            <td>Jl. Andi Pangerang, no. 23B-C, Luminda, Kec. Wara</td>
+            <td>Pdt. Yelpian Rumande</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Gosyen Lolai</strong></td>
+            <td>Lembang, Kapala Pitu, North Toraja Regency</td>
+            <td>Pdt. Orliana Sangka'</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Kristus Penebus</strong></td>
+            <td>Jl. Poros Enrekang-Makale No.km 6, binduk</td>
+            <td>Pdt. Daud Pasang</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Bukit Sion Mandetek</strong></td>
+            <td>Tambunan, Makale Utara, Tana Toraja Regency</td>
+            <td>Pdt. Yoseph P. Litak</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Kasih Karunia</strong></td>
+            <td>Wasuponda, Wasuponda district, East Luwu</td>
+            <td>Pdt. Gideon Oni</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Kasih Karunia Buntang</strong></td>
+            <td>Jl. Buntang, Lemo, Kec. Makale Utara, Kab. Tana Toraja</td>
+            <td>Pdt. Hilkia Putra</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Gunung Moria Lemo</strong></td>
+            <td>Jl. Pongtiku, Lemo, Kec. Makale Utara</td>
+            <td>Pdt. Daniel Dakka</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Ora et Labora Maroson</strong></td>
+            <td>Maroson, Rembon, Tana Toraja Regency</td>
+            <td>Pdt. Micha Tandi Liling</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Nazaret Bamba</strong></td>
+            <td>Lion Tower, Jalan Gedung NU, Lion Tondok</td>
+            <td>Pdt. Hermin Sampe Tondok</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Kristus Raja Damai Pantan</strong></td>
+            <td>Jl. Pongtiku, Pantan, Kec. Makale, Kabupaten Tana Toraja</td>
+            <td>Pdt. Ribka Romon</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Elshaddai Bolokan</strong></td>
+            <td>Tiroan, Bittuang, Tana Toraja Regency</td>
+            <td>Pdt. Yan Patunduk</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Jemaat Bethany Parepare</strong></td>
+            <td>Jl. Sibali No.22, Bukit Indah, Kec. Soreang, Kota Parepare</td>
+            <td>Pdt. Yong Manise</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SULAWESI TENGGARA -->
+  <div class="accordion-item">
+    <div class="accordion-label" onclick="toggleAccordion(this)">Sulawesi Tenggara</div>
+    <div class="accordion-content">
+      <table class="table-dir">
+        <thead>
+          <tr>
+            <th style="width: 30%;">Nama Jemaat</th>
+            <th style="width: 45%;">Alamat</th>
+            <th style="width: 25%;">Gembala Sidang</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>GBT KAO Jemaat Nekudu</strong></td>
+            <td>Ds. Nekudu Kec. Asinua</td>
+            <td>Pdt. Andreas Purwono</td>
+          </tr>
+          <tr>
+            <td><strong>GBT KAO Jemaat Kendari</strong></td>
+            <td>Jl. Diponegoro 39 Benua-benua</td>
+            <td>Pdm. Harun Witono</td>
+          </tr>
+          <tr>
+            <td><strong>GBT KAO Jemaat Raha</strong></td>
+            <td>Jl. Dewi Sartika 16 Raha</td>
+            <td>Pdt. Henoch Cristiono Antahu</td>
+          </tr>
+          <tr>
+            <td><strong>GBT KAO Jemaat Kolaka</strong></td>
+            <td>Jl. Pahlawan 16. Watuliando</td>
+            <td>Pdt. Soleman Mau Konda</td>
+          </tr>
+          <tr>
+            <td><strong>GBT KAO Jemaat Puriala</strong></td>
+            <td>Jl. Poros Motaha-Lambuya Ds. Tetewatu</td>
+            <td>Pdt. Sri Ekasari Sidupa</td>
+          </tr>
+          <tr>
+            <td><strong>GBT KAO Jemaat Puuroda</strong></td>
+            <td>Ds. Puuroda Kec. Baula</td>
+            <td>Pdt. Yance Tandiongan</td>
+          </tr>
+          <tr>
+            <td><strong>GBT HOG Jemaat Kendari</strong></td>
+            <td>Jl. Balai Kota III no. 49</td>
+            <td>Pdp. Dwikia Guyana Sidupa</td>
+          </tr>
+          <tr>
+            <td><strong>GBT HOG Jemaat Kendari</strong></td>
+            <td>Jl. Balai Kota III no. 49</td>
+            <td>Pdp. Grace Lisa Mentang</td>
+          </tr>
+          <tr>
+            <td><strong>GBT KAO Jemaat Mowewe</strong></td>
+            <td>Kel. Woitombo Kec. Mowewe</td>
+            <td>Yohanes Dumanao</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SULAWESI BARAT -->
+  <div class="accordion-item">
+    <div class="accordion-label" onclick="toggleAccordion(this)">Sulawesi Barat</div>
+    <div class="accordion-content">
+      <table class="table-dir">
+        <thead>
+          <tr>
+            <th style="width: 30%;">Nama Jemaat</th>
+            <th style="width: 45%;">Alamat</th>
+            <th style="width: 25%;">Gembala Sidang</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>GBT Jemaat Sindagamanik</strong></td>
+            <td>Jl. Poros Mamasa, Sindagamanik, Kec. Tanduk Kalua</td>
+            <td>Pdt. Leonard Litak</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Jemaat Tobadak</strong></td>
+            <td>Batu Parigi, Tobadak, Mamuju Regency</td>
+            <td>Pdt. Demmarua</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Minake Yesus Alfa Omega</strong></td>
+            <td>Jl. Poros Mamasa, Minake, Kec. Tanduk Kalua</td>
+            <td>Pdt. Agustinus Barnabas</td>
+          </tr>
+          <tr>
+            <td><strong>GBT Jemaat Smirna Salubue</strong></td>
+            <td>Rante Puang, Sesenapadang, Mamasa Regency</td>
+            <td>Pdt. Demianus K.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SULAWESI TENGAH -->
+  <div class="accordion-item">
+    <div class="accordion-label" onclick="toggleAccordion(this)">Sulawesi Tengah</div>
+    <div class="accordion-content">
+      <table class="table-dir">
+        <thead>
+          <tr>
+            <th style="width: 30%;">Nama Jemaat</th>
+            <th style="width: 45%;">Alamat</th>
+            <th style="width: 25%;">Gembala Sidang</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>GBT Kerajaan Allah Keurea</strong></td>
+            <td>Keurea, Bahodopi, Morowali Regency</td>
+            <td>Pdt. Sarwan Stefanus</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+</section>
+
+
+<!-- EVENT & BERITA -->
+<section id="event" class="section" style="background:#f5f7fb">
+<h2 class="section-title">Berita & Kegiatan</h2>
+
+<div class="jotform-table-embed" style="width: 100%; height: 600px;" data-id="261722778212054" data-iframesource="www.jotform.com" data-type="interactive"></div><script>(function(doc, id){var scripts=doc.getElementsByTagName("script")[0]; if (!doc.getElementById(id)){var script=doc.createElement("script"); script.async=1; script.id=id; script.src="https://cdn.jotfor.ms/s/umd/latest/for-sheets-embed.js"; scripts.parentNode.insertBefore(script, scripts);}})(document, "jotform-async");</script>
+
+
+</section>
+
+<!-- 3. HUBUNGI KAMI & FORMULIR KONTAK INTERAKTIF -->
+<!-- HUBUNGI KAMI & FORMULIR KONTAK INTERAKTIF (DUAL SYSTEM) -->
+<!-- HUBUNGI KAMI & FORMULIR KONTAK INTERAKTIF (GOOGLE SHEETS SYSTEM) -->
+<section id="kontak" class="section" style="background:#f5f7fb">
+<h2 class="section-title">Hubungi Kami</h2>
+<div class="contact-container">
+<!-- Info Kontak -->
+<div class="card">
+<h3>Sekretariat MPD 5 GBT</h3>
+<p>📍 <strong>Alamat:</strong> Jl. Kantor Sekretariat MPD 5, Palopo, Sulawesi Selatan</p>
+<p>📞 <strong>Telepon/WhatsApp:</strong> +62 813-4152-5268</p>
+<p>✉️ <strong>Email:</strong> sekretariatmpd5@gmail.com</p>
+<p>🕒 <strong>Jam Operasional:</strong> Senin - Jumat (09:00 - 16:00 WITA)</p>
+</div>
+<!-- Form Kontak Interaktif -->
+<div class="card">
+<h3>Kirim Pesan atau Pertanyaan</h3>
+<!-- GANTI MASUKKAN_URL_WEB_APP_ANDA_DISINI dengan URL Web App dari Google Apps Script -->
+<form id="contactForm" action="https://script.google.com/macros/s/AKfycbwzpdwO9x_p2XF2c6iL2C1OGtGGtVie8q53ddZGMl88C3yocwUewHEathBWctHKZxcG/exec" method="POST" onsubmit="handleFormSubmit(event)">
+<div class="form-group">
+<label for="name">Nama Lengkap</label>
+<input type="text" id="name" name="Nama Pengirim" class="form-control" placeholder="Nama Anda" required>
+</div>
+<!-- INPUT BARU: Kolom Email Pengirim -->
+<div class="form-group">
+<label for="email">Alamat Email Anda</label>
+<input type="email" id="email" name="Email Pengirim" class="form-control" placeholder="contoh@email.com" required>
+</div>
+<div class="form-group">
+<label for="church">Asal GBT / Jemaat Lokal</label>
+<input type="text" id="church" name="Asal Jemaat GBT" class="form-control" placeholder="Contoh: GBT KAO Kendari">
+</div>
+<div class="form-group">
+<label for="message">Pesan Anda</label>
+<textarea id="message" name="Isi Pesan" class="form-control" rows="4" placeholder="Tuliskan pertanyaan atau pengajuan surat di sini..." required></textarea>
+</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+<button type="button" class="btn-submit" onclick="sendToWhatsApp()" style="background: #25D366; color: #fff;">Kirim via WA</button>
+<button type="submit" id="submitEmailBtn" class="btn-submit" style="background: var(--navy); color: #fff;">Kirim via Email</button>
+</div>
+</form>
+</div>
+</div>
+</section>
+
+<script>
+
+function sendToWhatsApp() {
+  const phoneNumber = "6281341525268"; 
+  const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value; // Ambil data email
+  const church = document.getElementById('church').value;
+  const message = document.getElementById('message').value;
+  
+  if (!name || !email || !message) {
+    alert("Mohon isi Nama Lengkap, Email, dan Pesan terlebih dahulu.");
+    return;
+  }
+  
+  const text = `Halo MPD 5 GBT, ada pesan baru dari website:\n\n*Nama:* ${name}\n*Email:* ${email}\n*Asal GBT:* ${church || '-'}\n*Pesan:* ${message}`;
+  const encodedText = encodeURIComponent(text);
+  window.open(`https://wa.me/${phoneNumber}?text=${encodedText}`, '_blank');
+  
+    // Membersihkan isi formulir setelah WhatsApp terbuka
+  const form = document.getElementById('contactForm');
+  form.reset();
+}
+
+function handleFormSubmit(event) {
+  event.preventDefault();
+  
+  const form = document.getElementById('contactForm');
+  const submitButton = document.getElementById('submitEmailBtn');
+  const actionUrl = form.getAttribute('action');
+  
+  // Mengubah status tombol saat data dikirim
+  submitButton.disabled = true;
+  submitButton.innerText = "Mengirim...";
+  
+  // Mengirim data ke Google Sheets di latar belakang
+  fetch(actionUrl, { method: 'POST', body: new FormData(form)})
+    .then(response => {
+       alert("Puji Tuhan, pesan Anda berhasil terkirim dan tercatat di dokumen Google Sheets pengurus!");
+       form.reset(); // Mengosongkan form kembali setelah sukses
+    })
+    .catch(error => {
+       alert("Terjadi kesalahan saat mengirim pesan. Silakan coba lagi atau gunakan opsi Kirim via WA.");
+       console.error('Error!', error.message);
+    })
+    .finally(() => {
+       submitButton.disabled = false;
+       submitButton.innerText = "Kirim via Email";
+    });
+}
+function toggleAccordion(element) {var item = element.parentElement;item.classList.toggle('active');}
+</script>
+
+
+<footer class="footer">
+<p>© 2026 MPD 5 Gereja Beth‑El Tabernakel</p>
+<p>Website resmi wilayah Sulsel • Sulbar • Sulteng • Sultra</p>
+</footer>
+
+</body>
+</html>
