@@ -1,0 +1,264 @@
+<style>
+/* Deklarasi Variabel Warna Sesuai Request */
+:root {
+  --navy: #0B1F3A;
+  --gold: #C8A44D;
+  --light: #f5f7fb;
+  --dark: #222;
+  --white: #ffffff;
+  --gray-border: #e2e8f0;
+  --text-muted: #64748b;
+}
+
+/* Base Section Styling */
+.section {
+  background-color: var(--light);
+  padding: 40px 20px;
+  font-family: 'Inter', sans-serif;
+  color: var(--dark);
+}
+.section-title {
+  color: var(--navy);
+  font-size: 2rem;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+.section p {
+  color: var(--text-muted);
+  margin-bottom: 25px;
+}
+
+/* Desain Kotak Pencarian Modern */
+.search-box {
+  width: 100%;
+  max-width: 450px;
+  padding: 14px 20px;
+  border: 2px solid var(--gray-border);
+  border-radius: 12px;
+  margin-bottom: 25px;
+  font-size: 15px;
+  display: block;
+  background-color: var(--white);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+.search-box:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 4px 12px rgba(200, 164, 77, 0.2);
+}
+
+/* Desain Tombol Filter Provinsi */
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 35px;
+}
+.filter-btn {
+  background: var(--white);
+  color: var(--navy);
+  border: 1px solid var(--gray-border);
+  padding: 10px 22px;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.filter-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: var(--white);
+}
+.filter-btn.active {
+  background: var(--navy);
+  color: var(--white);
+  border-color: var(--navy);
+  box-shadow: 0 4px 12px rgba(11, 31, 58, 0.25);
+}
+
+/* Grid Layout Upgraded */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+/* Desain Kartu (Church Item Card) */
+.church-item {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid var(--gray-border);
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+.church-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px -3px rgba(11, 31, 58, 0.1);
+  border-color: rgba(200, 164, 77, 0.4);
+}
+.church-item.hidden {
+  display: none !important;
+}
+
+/* Badge Provinsi Kustom */
+.badge {
+  align-self: flex-start;
+  background: rgba(200, 164, 77, 0.15);
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Judul & Tautan Gereja */
+.church-item h4 {
+  margin: 0 0 12px 0;
+  font-size: 1.2rem;
+  line-height: 1.4;
+}
+.church-item h4 a {
+  color: var(--navy) !important;
+  text-decoration: none !important;
+  transition: color 0.2s ease !important;
+  position: relative;
+  display: inline-block !important;
+}
+.church-item h4 a:hover {
+  color: var(--gold) !important;
+}
+
+/* Detail Teks Informasi */
+.church-item p {
+  font-size: 14px;
+  color: var(--dark);
+  margin: 6px 0;
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+}
+.church-item p strong {
+  color: var(--navy);
+  margin-right: 4px;
+}
+
+/* MEMBUAT BALON TIPS KUSTOM INSTAN DAN SANGAT CEPAT */
+.church-item h4 a::after {
+  content: "Lihat lokasi di Google Maps 🗺️";
+  position: absolute;
+  bottom: 130%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--navy);
+  color: var(--white);
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 10;
+  border: 1px solid rgba(200, 164, 77, 0.3);
+}
+.church-item h4 a:hover::after {
+  opacity: 1;
+}
+</style>
+
+<section id="direktori" class="section">
+<h2 class="section-title">Direktori Gereja</h2>
+<p>Temukan daftar wilayah pelayanan dan jemaat lokal di bawah naungan MPD 5:</p>
+
+<input type="text" id="churchSearch" class="search-box" placeholder="🔍 Cari berdasarkan nama gereja, kota, atau gembala..." onkeyup="filterChurches()">
+
+<div class="filter-container">
+  <button class="filter-btn active" onclick="filterProvince('all', this)">Semua Wilayah</button>
+  <button class="filter-btn" onclick="filterProvince('sulsel', this)">Sulawesi Selatan</button>
+  <button class="filter-btn" onclick="filterProvince('sulbar', this)">Sulawesi Barat</button>
+  <button class="filter-btn" onclick="filterProvince('sulteng', this)">Sulawesi Tengah</button>
+  <button class="filter-btn" onclick="filterProvince('sultra', this)">Sulawesi Tenggara</button>
+</div>
+
+<div class="grid" id="churchGrid">
+  
+  <div class="card church-item" data-province="sulsel"><span class="badge">Sulawesi Selatan</span><h4><a href="https://maps.app.goo.gl/LUauS4HVrgWcUHUi7" target="_blank">GBT Jemaat Indonesia 🔗</a></h4><p>📍 Jl. G. Salahutu III No.18, Mardekaya Utara, Kec. Makassar, Kota Makassar</p><p>👤 <strong>Gembala:</strong> Pdt. Markus Kusmanto</p><p>👥 <strong>Wilayah:</strong> MPW 5</p></div>
+	<div class="card church-item" data-province="sulsel"><span class="badge">Sulawesi Selatan</span><h4><a href="https://maps.app.goo.gl/VHWSg8gYbkskVe4X8" target="_blank">GBT Getsemani Makassar 🔗</a></h4><p>📍 Komp. Crisant, Jl. Pandang Raya No.18 Blok E, Pandang, Kec. Panakkukang, Kota Makassar</p><p>👤 <strong>Gembala:</strong> Pdt. Ayub Andi Tomasoyan</p><p>👥 <strong>Wilayah:</strong> MPW 5</p></div>
+	<div class="card church-item" data-province="sulsel"><span class="badge">Sulawesi Selatan</span><h4><a href="https://maps.app.goo.gl/gXzbebdcbZbfk4Cg8" target="_blank">GBT Syalom Makassar 🔗</a></h4><p>📍 Paccerakkang, Kec. Biringkanaya, Kota Makassar</p><p>👤 <strong>Gembala:</strong> Pdt. Andi Tomasoyan</p><p>👥 <strong>Wilayah:</strong> MPW 5</p></div>
+	<div class="card church-item" data-province="sulsel"><span class="badge">Sulawesi Selatan</span><h4><a href="https://maps.app.goo.gl/JN91iD246fbG1ZuLA" target="_blank">GBT Kristus Pembela 🔗</a></h4><p>📍 Jl. Sakura No.3, Paropo, Panakkukang, Makassar</p><p>👤 <strong>Gembala:</strong> Pdt. Maria Rudas</p><p>👥 <strong>Wilayah:</strong> MPW 5</p></div>
+	<div class="card church-item" data-province="sulsel"><span class="badge">Sulawesi Selatan</span><h4><a href="https://maps.app.goo.gl/fMfeKgMEYrJjrKUC7" target="_blank">GBT Kristus Bangkit Bolu 🔗</a></h4><p>📍 Tallunglipu Matalo, Tallunglipu, North Toraja Regency</p><p>👤 <strong>Gembala:</strong> Pdt. Nehemia Tangkin</p><p>👥 <strong>Wilayah:</strong> MPW 1</p></div>
+	<div class="card church-item" data-province="sulsel"><span class="badge">Sulawesi Selatan</span><h4><a href="https://maps.app.goo.gl/oBE8GVxu6WFsu6nHA" target="_blank">GBT Filadelfia Maleku 🔗</a></h4><p>📍 Jl. Pahlawan 6 Maleku Mangkutana Luwu Timur</p><p>👤 <strong>Gembala:</strong> Pdt. Daniel Kalu'</p><p>👥 <strong>Wilayah:</strong> MPW 2</p></div>
+	<div class="card church-item" data-province="sulsel"><span class="badge">Sulawesi Selatan</span><h4><a href="https://maps.app.goo.gl/BvfXfVg3nj6LoA6C9" target="_blank">GBT Rehoboth Palopo 🔗</a></h4><p>📍 Jl. Andi Pangerang. no. 23B-C, Luminda, Kec. Wara Utara, Kota Palopo</p><p>👤 <strong>Gembala:</strong> Pdt. Yelpian Rumande</p><p>👥 <strong>Wilayah:</strong> MPW 2</p></div>
+	<div class="card church-item" data-province="sulsel"><span class="badge">Sulawesi Selatan</span><h4><a href="https://maps.app.goo.gl/HgjJMieoPTc57vzS9" target="_blank">GBT Gosyen Lolai 🔗</a></h4><p>📍 Lembang, Kapala Pitu, North Toraja Regency</p><p>👤 <strong>Gembala:</strong> Pdt. Orliana Sangka'</p><p>👥 <strong>Wilayah:</strong> MPW 1</p></div>
+	<div class="card church-item" data-province="sulsel"><span class="badge">Sulawesi Selatan</span><h4><a href="https://maps.app.goo.gl/r6gV1C4yjoWki1eM6" target="_blank">GBT Kristus Penebus 🔗</a></h4><p>📍 l. Poros Enrekang-Makale No.km 6, binduk, Kec. Mengkendek, Kabupaten Tana Toraja</p><p>👤 <strong>Gembala:</strong> Pdt. Daud Pasang</p><p>👥 <strong>Wilayah:</strong> MPW 1</p></div>
+	<div class="card church-item" data-province="sulsel"><span class="badge">Sulawesi Selatan</span><h4><a href="https://maps.app.goo.gl/d5YseQoYDKPWAc1o9" target="_blank">GBT Bukit Sion Mandetek 🔗</a></h4><p>📍 Tambunan, Makale Utara, Tana Toraja Regency</p><p>👤 <strong>Gembala:</strong> Pdt. Yoseph P. Litak</p><p>👥 <strong>Wilayah:</strong> MPW 1</p></div>
+	<div class="card church-item" data-province="sulsel"><span class="badge">Sulawesi Selatan</span><h4><a href="https://maps.app.goo.gl/KGMNGvSYvMsyFpdH7" target="_blank">GBT Kasih Karunia 🔗</a></h4><p>📍 Wasuponda, Wasuponda district, East Luwu Regency</p><p>👤 <strong>Gembala:</strong> Pdt. Gideon Oni</p><p>👥 <strong>Wilayah:</strong> MPW 2</p></div>
+	<div class="card church-item" data-province="sulsel"><span class="badge">Sulawesi Selatan</span><h4><a href="https://maps.app.goo.gl/KfpC3CEgPMk5ix927" target="_blank">GBT Kasih Karunia Buntang 🔗</a></h4><p>📍 Jl. Buntang, Lemo, Kec. Makale Utara, Kabupaten Tana Toraja</p><p>👤 <strong>Gembala:</strong> Pdt. Hilkia Putra</p><p>👥 <strong>Wilayah:</strong> MPW 1</p></div>
+	<div class="card church-item" data-province="sulsel"><span class="badge">Sulawesi Selatan</span><h4><a href="https://maps.app.goo.gl/K4C6dfiXcQzHk5zC8" target="_blank">GBT Gunung Moria Lemo 🔗</a></h4><p>📍 Jl. Pongtiku, Lemo, Kec. Makale Utara</p><p>👤 <strong>Gembala:</strong> Pdt. Daniel Dakka</p><p>👥 <strong>Wilayah:</strong> MPW 2</p></div>
+	<div class="card church-item" data-province="sulsel"><span class="badge">Sulawesi Selatan</span><h4><a href="https://maps.app.goo.gl/uAtkdoVxhZcpAp447" target="_blank">GBT Ora et Labora Maroson 🔗</a></h4><p>📍 Maroson, Rembon, Tana Toraja Regency</p><p>👤 <strong>Gembala:</strong> Pdt. Micha Tandi Liling</p><p>👥 <strong>Wilayah:</strong> MPW 1</p></div>
+	<div class="card church-item" data-province="sulsel"><span class="badge">Sulawesi Selatan</span><h4><a href="https://maps.app.goo.gl/JPretvkJfZdkUcMa8" target="_blank">GBT Nazaret Bamba 🔗</a></h4><p>📍 Lion Tower, Jalan Gedung NU, Lion Tondok Iring, Kec. Makale Utara, Kabupaten Tana Toraja</p><p>👤 <strong>Gembala:</strong> Pdt. Hermin Sampe Tondok</p><p>👥 <strong>Wilayah:</strong> MPW 1</p></div>
+	<div class="card church-item" data-province="sulsel"><span class="badge">Sulawesi Selatan</span><h4><a href="https://maps.app.goo.gl/iZeLgnZYq2eLvQoQ8" target="_blank">GBT Kristus Raja Damai Pantan 🔗</a></h4><p>📍 Jl. Pongtiku, Pantan, Kec. Makale, Kabupaten Tana Toraja</p><p>👤 <strong>Gembala:</strong> Pdt. Ribka Romon</p><p>👥 <strong>Wilayah:</strong> MPW 1</p></div>
+	<div class="card church-item" data-province="sulsel"><span class="badge">Sulawesi Selatan</span><h4><a href="https://maps.app.goo.gl/3rC9Vrd5kxcRTmhi9" target="_blank">GBT Elshaddai Bolokan 🔗</a></h4><p>📍 Tiroan, Bittuang, Tana Toraja Regency</p><p>👤 <strong>Gembala:</strong> Pdt. Yan Patunduk</p><p>👥 <strong>Wilayah:</strong> MPW 1</p></div>
+	<div class="card church-item" data-province="sulsel"><span class="badge">Sulawesi Selatan</span><h4><a href="https://maps.app.goo.gl/LUDiUxmU7mUiHDiF9" target="_blank">GBT Jemaat Bethany Parepare 🔗</a></h4><p>📍 Jl. Sibali No.22, Bukit Indah, Kec. Soreang, Kota Parepare</p><p>👤 <strong>Gembala:</strong> Pdt. Yong Manise</p><p>👥 <strong>Wilayah:</strong> MPW 1</p></div>
+
+  <div class="card church-item" data-province="sulbar"><span class="badge">Sulawesi Barat</span><h4><a href="https://maps.app.goo.gl/aUHX2pFRc1MakrVX7" target="_blank">GBT Jemaat Sindagamanik 🔗</a></h4><p>📍 Jl. Poros Mamasa, Sindagamanik, Kec. Tanduk Kalua, Kabupaten Mamasa</p><p>👤 <strong>Gembala:</strong> Pdt. Leonard Litak</p><p>👥 <strong>Wilayah:</strong> MPW 4</p></div>
+	<div class="card church-item" data-province="sulbar"><span class="badge">Sulawesi Barat</span><h4><a href="https://maps.app.goo.gl/nBYN8BY1ed9zjY8b8" target="_blank">GBT Jemaat Tobadak 🔗</a></h4><p>📍 Batu Parigi, Tobadak, Mamuju Regency</p><p>👤 <strong>Gembala:</strong> Pdt. Demmarua</p><p>👥 <strong>Wilayah:</strong> MPW 4</p></div>
+	<div class="card church-item" data-province="sulbar"><span class="badge">Sulawesi Barat</span><h4><a href="https://maps.app.goo.gl/ikp33MGypRC9uP556" target="_blank">GBT Minake Yesus Alfa Omega 🔗</a></h4><p>📍 Jl. Poros Mamasa, Minake, Kec. Tanduk Kalua, Kabupaten Mamasa</p><p>👤 <strong>Gembala:</strong> Pdt. Agustinus Barnabas</p><p>👥 <strong>Wilayah:</strong> MPW 4</p></div>
+	<div class="card church-item" data-province="sulbar"><span class="badge">Sulawesi Barat</span><h4><a href="https://maps.app.goo.gl/KVQieL6o4nDi1XrU6" target="_blank">GBT Jemaat Smirna Salubue 🔗</a></h4><p>📍 Rante Puang, Sesenapadang, Mamasa Regency</p><p>👤 <strong>Gembala:</strong> Pdt. Demianus K.</p><p>👥 <strong>Wilayah:</strong> MPW 4</p></div>
+
+  <div class="card church-item" data-province="sulteng"><span class="badge">Sulawesi Tengah</span><h4><a href="https://maps.app.goo.gl/3mAqkCmHhsAH6Z4g7" target="_blank">GBT Kerajaan Allah Keurea 🔗</a></h4><p>📍 Keurea, Bahodopi, Morowali Regency</p><p>👤 <strong>Gembala:</strong> Pdt. Sarwan Stefanus</p><p>👥 <strong>Wilayah:</strong> MPW 2</p></div>
+
+  <div class="card church-item" data-province="sultra"><span class="badge">Sulawesi Tenggara</span><h4><a href="https://maps.app.goo.gl/5wQTvToLkMkAJBN28" target="_blank">GBT KAO Jemaat Nekudu 🔗</a></h4><p>📍 Ds.Nekudu Kec.Asinua</p><p>👤 <strong>Gembala:</strong> Pdt. Andreas Purwono</p><p>👥 <strong>Wilayah:</strong> MPW 3</p></div>
+	<div class="card church-item" data-province="sultra"><span class="badge">Sulawesi Tenggara</span><h4><a href="https://maps.app.goo.gl/NiHEUGEgDFT5XReE8" target="_blank">GBT KAO Jermaat Kendari 🔗</a></h4><p>📍 Jl. Diponegoro 39 Benua,</p><p>👤 <strong>Gembala:</strong> Pdm. Harun Witono</p><p>👥 <strong>Wilayah:</strong> MPW 3</p></div>
+	<div class="card church-item" data-province="sultra"><span class="badge">Sulawesi Tenggara</span><h4><a href="https://maps.app.goo.gl/cCnDMWdK41auP9fj6" target="_blank">GBT KAO Jemaat Raha 🔗</a></h4><p>📍 Jl.Dewi Sartika 16 Raha</p><p>👤 <strong>Gembala:</strong> Pdt. Henoch Cristiono Antahu</p><p>👥 <strong>Wilayah:</strong> MPW 3</p></div>
+	<div class="card church-item" data-province="sultra"><span class="badge">Sulawesi Tenggara</span><h4><a href="" target="_blank">GBT KAO Jemaat Kolaka 🔗</a></h4><p>📍 Jl.Pahlawan 16. Watuliando</p><p>👤 <strong>Gembala:</strong> Pdt. Soleman Mau Konda</p><p>👥 <strong>Wilayah:</strong> MPW 3</p></div>
+	<div class="card church-item" data-province="sultra"><span class="badge">Sulawesi Tenggara</span><h4><a href="https://maps.app.goo.gl/36PvkCrJ11kpXZPM8" target="_blank">GBT KAO Jemaat Puriala 🔗</a></h4><p>📍 Jl. Poros Motaha-Lambuya Ds. Tetewatu</p><p>👤 <strong>Gembala:</strong> Pdt. Sri Ekasari Sidupa</p><p>👥 <strong>Wilayah:</strong> MPW 3</p></div>
+	<div class="card church-item" data-province="sultra"><span class="badge">Sulawesi Tenggara</span><h4><a href="https://maps.app.goo.gl/dUthmpzar3MH4JRQ8" target="_blank">GBT KAO Jemaat Puuroda 🔗</a></h4><p>📍 Ds.Puuroda Kec.Baula</p><p>👤 <strong>Gembala:</strong> Pdt. Yance Tandiongan</p><p>👥 <strong>Wilayah:</strong> MPW 3</p></div>
+	<div class="card church-item" data-province="sultra"><span class="badge">Sulawesi Tenggara</span><h4><a href="https://maps.app.goo.gl/ijpm4a18SaPwRrz86" target="_blank">GBT HOG Jemaat Kendari 🔗</a></h4><p>📍 Jl. Balai Kota III no. 49</p><p>👤 <strong>Gembala:</strong> Pdp. Dwikia Guyana Sidupa</p><p>👥 <strong>Wilayah:</strong> MPW 3</p></div>
+	<div class="card church-item" data-province="sultra"><span class="badge">Sulawesi Tenggara</span><h4><a href="https://maps.app.goo.gl/ijpm4a18SaPwRrz86" target="_blank">GBT HOG Jemaat Kendari 🔗</a></h4><p>📍 Jl. Balai Kota III no. 49</p><p>👤 <strong>Gembala:</strong> Pdp. Grace Lisa Mentang</p><p>👥 <strong>Wilayah:</strong> MPW 3</p></div>
+	<div class="card church-item" data-province="sultra"><span class="badge">Sulawesi Tenggara</span><h4><a href="https://maps.app.goo.gl/dpMjDx5kPn7Lz1Cm7" target="_blank">GBT KAO Jemaat Mowewe 🔗</a></h4><p>📍 Kel.Woitombo Kec.Mowewe</p><p>👤 <strong>Gembala:</strong> Yohanes Dumanao</p><p>👥 <strong>Wilayah:</strong> MPW 3</p></div>
+
+</div>
+</section>
+
+<script>
+let currentProvince = 'all';
+
+function filterProvince(province, button) {
+  currentProvince = province;
+  
+  const buttons = document.querySelectorAll('.filter-btn');
+  buttons.forEach(btn => btn.classList.remove('active'));
+  button.classList.add('active');
+  
+  filterChurches();
+}
+
+function filterChurches() {
+  const searchQuery = document.getElementById('churchSearch').value.toLowerCase();
+  const items = document.querySelectorAll('.church-item');
+  
+  items.forEach(item => {
+    const provinceMatch = (currentProvince === 'all' || item.getAttribute('data-province') === currentProvince);
+    const textMatch = item.textContent.toLowerCase().includes(searchQuery);
+    
+    if (provinceMatch && textMatch) {
+      item.classList.remove('hidden');
+    } else {
+      item.classList.add('hidden');
+    }
+  });
+}
+</script>

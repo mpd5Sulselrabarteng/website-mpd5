@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Server Panel</title>
+    <style>
+        :root { --bg: #f4f6f9; --card: #ffffff; --primary: #1e3d6b; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { width: 100%; max-width: 950px; padding: 20px; box-sizing: border-box; }
+        .card { background: var(--card); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.05); padding: 30px; }
+        .login-box { max-width: 380px; margin: 0 auto; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
+        .btn { background: var(--primary); color: white; padding: 12px; border: none; border-radius: 6px; width: 100%; cursor: pointer; font-weight: bold; }
+        .error-msg { color: #d9534f; margin-top: 10px; display: none; font-size: 14px; }
+        #main-content { display: none; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; font-weight: 600; color: #444; cursor: pointer; user-select: none; }
+        th:hover { background: #e9ecef; }
+        .btn-action { color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 13px; display: inline-block; font-weight: bold; border: none; cursor: pointer; }
+        .btn-dl { background: #28a745; } .btn-dl:hover { background: #218838; }
+        .btn-folder { background: #ffc107; color: #212529; } .btn-folder:hover { background: #e0a800; }
+        .btn-logout { background: #6c757d; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; }
+        .badge-tipe { background: #e9ecef; color: #495057; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-family: monospace; }
+        .folder-path { font-size: 16px; font-weight: bold; color: #1e3d6b; margin-top: 5px; }
+        .btn-back { background: #17a2b8; margin-right: 10px; }
+    </style>
+</head>
+<body>
+
+<!-- COMPONENT 1: HALAMAN GATE LOGIN -->
+<div id="login-content" class="container">
+    <div class="card login-box">
+        <h2>🔒 Log In Ke Server</h2>
+        <p style="color:#666; font-size:14px;">Masukkan kredensial terdaftar di Google Sheets</p>
+        <form onsubmit="prosesLogin(event)">
+            <input type="text" id="user-input" placeholder="Username" required autocomplete="username">
+            <input type="password" id="pass-input" placeholder="Password" required autocomplete="current-password">
+            <button type="submit" class="btn" id="btn-login-text">Masuk ke Direktori</button>
+        </form>
+        <div id="error-message" class="error-msg"></div>
+    </div>
+</div>
+
+<!-- COMPONENT 2: HALAMAN DIREKTORI FILE SERVER -->
+<div id="main-content" class="container">
+    <div class="card">
+        <div class="header">
+            <div>
+                <h1 style="margin:0; font-size: 24px;">Cloud Web Server Panel</h1>
+                <div class="folder-path" id="folder-title">Folder: Menghubungkan...</div>
+            </div>
+            <div>
+                <button id="btn-kembali" class="btn-action btn-back" style="display:none;">⬅ Kembali</button>
+                <button class="btn-logout" onclick="logout()">Keluar Server</button>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th onclick="urutkanData('nama')">Nama File ↕</th>
+                    <th onclick="urutkanData('ukuran')">Ukuran ↕</th>
+                    <th onclick="urutkanData('tipeSingkat')">Tipe ↕</th>
+                    <th style="cursor: default; background: #f8f9fa;">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="file-list">
+                <tr><td colspan="4" style="text-align:center; padding: 20px;">Memuat repositori data...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // ⚠️ TEMPELKAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI (/exec)
+    // const WEB_APP_URL = "PASTE_URL_WEB_APP_ANDA_DI_SINI";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz-y0sU3ThPtGVpussxNkbMRnO0D3sDPt70oTnYbMehFGeBI8zUezNaltec7_j_VuY/exec"
+	
+    let DATA_FILE_GLOBAL = [];
+    let ARAH_URUTAN = { nama: true, ukuran: true, tipeSingkat: true };
+
+    async function prosesLogin(event) {
+        event.preventDefault();
+        const user = document.getElementById('user-input').value;
+        const pass = document.getElementById('pass-input').value;
+        const errMsg = document.getElementById('error-message');
+        const btnText = document.getElementById('btn-login-text');
+        
+        errMsg.style.display = 'none';
+        btnText.innerText = "Memverifikasi...";
+
+        // Mengirim parameter via query string GET aman bebas CORS
+        const urlLogin = `${WEB_APP_URL}?action=login&username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}`;
+
+        try {
+            const response = await fetch(urlLogin);
+            const result = await response.json();
+
+            if (result.status === "success") {
+                sessionStorage.setItem('isLoggedIn', 'true');
+                ambilDirektoriFolder(""); // Login Berhasil -> Tarik isi folder
+            } else {
+                errMsg.style.display = 'block';
+                errMsg.innerText = result.message || "Akses ditolak. Cek Username/Password.";
+                btnText.innerText = "Masuk ke Direktori";
+            }
+        } catch (error) {
+            console.error(error);
+            errMsg.style.display = 'block';
+            errMsg.innerText = "Gagal menghubungi server database. Periksa URL skrip Web App Anda.";
+            btnText.innerText = "Masuk ke Direktori";
+        }
+    }
+
+    async function ambilDirektoriFolder(folderId) {
+        const tableBody = document.getElementById('file-list');
+        tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">Menarik katalog berkas realtime...</td></tr>';
+        
+        let urlFetch = WEB_APP_URL;
+        if(folderId) { urlFetch += `?folderId=${folderId}`; }
+
+        try {
+            const response = await fetch(urlFetch);
+            const result = await response.json();
+
+            if (result.status === "success") {
+                document.getElementById('login-content').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                document.getElementById('folder-title').innerText = "📁 Berada di: " + result.namaFolder;
+
+                const btnKembali = document.getElementById('btn-kembali');
+                if (result.isSubfolder) {
+                    btnKembali.style.display = "inline-block";
+                    btnKembali.onclick = () => ambilDirektoriFolder(result.parentFolderId);
+                } else {
+                    btnKembali.style.display = "none";
+                }
+
+                DATA_FILE_GLOBAL = result.data.map(item => ({
+                    ...item,
+                    tipeSingkat: item.tipe === "Folder" ? "FOLDER" : item.tipe.split('/').pop().toUpperCase()
+                }));
+
+                tampilkanTabel();
+            } else {
+                alert("Kesalahan membaca enkripsi berkas: " + result.message);
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Sesi terputus. Gagal membaca repositori berkas.");
+        }
+    }
+
+    function tampilkanTabel() {
+        const tableBody = document.getElementById('file-list');
+        tableBody.innerHTML = '';
+
+        if(DATA_FILE_GLOBAL.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:#666;">Direktori folder ini kosong.</td></tr>';
+            return;
+        }
+
+        DATA_FILE_GLOBAL.forEach(item => {
+            let tombolAksi = item.tipe === "Folder" 
+                ? `<button onclick="ambilDirektoriFolder('${item.id}')" class="btn-action btn-folder">Buka Folder</button>`
+                : `<button onclick="window.open('${item.url}', '_blank')" class="btn-action btn-dl">Download</button>`;<!--: `<a href="${item.url}" class="btn-action btn-dl" target="_blank"  >Download</a>`; -->
+
+            const row = `<tr>
+                <td><strong>${item.nama}</strong></td>
+                <td>${item.ukuran}</td>
+                <td><span class="badge-tipe">${item.tipeSingkat}</span></td>
+                <td>${tombolAksi}</td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    function urutkanData(kolom) {
+        const naik = ARAH_URUTAN[kolom];
+        DATA_FILE_GLOBAL.sort((a, b) => {
+            return naik ? a[kolom].localeCompare(b[kolom]) : b[kolom].localeCompare(a[kolom]);
+        });
+        ARAH_URUTAN[kolom] = !naik;
+        tampilkanTabel();
+    }
+
+    function logout() {
+        sessionStorage.clear();
+        window.location.reload();
+    }
+
+    window.onload = function() {
+        if (sessionStorage.getItem('isLoggedIn') === 'true') {
+            ambilDirektoriFolder("");
+        }
+    };
+</script>
+</body>
+</html>
