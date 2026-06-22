@@ -16,7 +16,22 @@
 body{margin:0;font-family:'Inter',sans-serif;background:#fff;color:var(--dark);line-height:1.6}
 .topbar{background:var(--navy);color:#fff;padding:8px 20px;font-size:14px;text-align:right}
 header{display:flex;justify-content:space-between;align-items:center;padding:16px 40px;background:#fff;position:sticky;top:0;box-shadow:0 2px 10px rgba(0,0,0,.08);z-index:100}
-.logo{font-weight:700;color:var(--navy);font-family:'Montserrat',sans-serif}
+
+/* REVISI: Mengatur Logo dan Teks agar Sejajar Menyamping */
+.logo{
+display: flex;
+align-items: center;
+gap: 12px; /* Jarak antara gambar logo dan teks nama gereja */
+font-weight:700;
+color:var(--navy);
+font-family:'Montserrat',sans-serif;
+}
+
+/* REVISI: Mengatur Ukuran Logo */
+.logo img {
+height: 40px; /* Tinggi logo disesuaikan dengan tinggi header */
+width: auto;   /* Lebar otomatis proporsional */
+}
 
 /* Navigation & Hamburger Styling (Pure CSS) */
 nav {display: flex;align-items: center;}
@@ -112,7 +127,12 @@ nav a {margin: 10px 0;width: 100%;text-align: center;}
 <div class="topbar">MPD 5 GBT • Sulsel • Sulbar • Sulteng • Sultra</div>
 
 <header>
-<div class="logo">MPD 5 Gereja Beth-El Tabernakel</div>
+<!-- REVISI: Menambahkan tag img di samping kiri teks nama gereja -->
+<div class="logo">
+  <img src="images/logo-gbt.png" alt="Logo GBT">
+  <span>MPD 5 Gereja Beth‑El Tabernakel</span>
+</div>
+
 <!-- Hamburger Menu Input & Label -->
 <input type="checkbox" id="menu-checkbox">
 <label for="menu-checkbox" class="menu-toggle">
@@ -447,29 +467,25 @@ nav a {margin: 10px 0;width: 100%;text-align: center;}
 </section>
 
 <!-- 3. HUBUNGI KAMI & FORMULIR KONTAK INTERAKTIF -->
-<!-- HUBUNGI KAMI & FORMULIR KONTAK INTERAKTIF (DUAL SYSTEM) -->
-<!-- HUBUNGI KAMI & FORMULIR KONTAK INTERAKTIF (GOOGLE SHEETS SYSTEM) -->
 <section id="kontak" class="section" style="background:#f5f7fb">
 <h2 class="section-title">Hubungi Kami</h2>
 <div class="contact-container">
 <!-- Info Kontak -->
 <div class="card">
 <h3>Sekretariat MPD 5 GBT</h3>
-<p>📍 <strong>Alamat:</strong> Jl. Kantor Sekretariat MPD 5, Palopo, Sulawesi Selatan</p>
+<p>📍 <strong>Alamat:</strong> <a href="https://maps.app.goo.gl/DfRkyYcw74Miubm16" target="_blank">Jl. Kantor Sekretariat MPD 5, Palopo, Sulawesi Selatan</a></p>
 <p>📞 <strong>Telepon/WhatsApp:</strong> +62 813-4152-5268</p>
-<p>✉️ <strong>Email:</strong> sekretariatmpd5@gmail.com</p>
+<p>✉️ <strong>Email:</strong> info@mpd5.co-id.id</p>
 <p>🕒 <strong>Jam Operasional:</strong> Senin - Jumat (09:00 - 16:00 WITA)</p>
 </div>
 <!-- Form Kontak Interaktif -->
 <div class="card">
 <h3>Kirim Pesan atau Pertanyaan</h3>
-<!-- GANTI MASUKKAN_URL_WEB_APP_ANDA_DISINI dengan URL Web App dari Google Apps Script -->
 <form id="contactForm" action="https://script.google.com/macros/s/AKfycbwzpdwO9x_p2XF2c6iL2C1OGtGGtVie8q53ddZGMl88C3yocwUewHEathBWctHKZxcG/exec" method="POST" onsubmit="handleFormSubmit(event)">
 <div class="form-group">
 <label for="name">Nama Lengkap</label>
 <input type="text" id="name" name="Nama Pengirim" class="form-control" placeholder="Nama Anda" required>
 </div>
-<!-- INPUT BARU: Kolom Email Pengirim -->
 <div class="form-group">
 <label for="email">Alamat Email Anda</label>
 <input type="email" id="email" name="Email Pengirim" class="form-control" placeholder="contoh@email.com" required>
@@ -492,11 +508,10 @@ nav a {margin: 10px 0;width: 100%;text-align: center;}
 </section>
 
 <script>
-
 function sendToWhatsApp() {
   const phoneNumber = "6281341525268"; 
   const name = document.getElementById('name').value;
-  const email = document.getElementById('email').value; // Ambil data email
+  const email = document.getElementById('email').value; 
   const church = document.getElementById('church').value;
   const message = document.getElementById('message').value;
   
@@ -509,7 +524,6 @@ function sendToWhatsApp() {
   const encodedText = encodeURIComponent(text);
   window.open(`https://wa.me/${phoneNumber}?text=${encodedText}`, '_blank');
   
-    // Membersihkan isi formulir setelah WhatsApp terbuka
   const form = document.getElementById('contactForm');
   form.reset();
 }
@@ -521,15 +535,13 @@ function handleFormSubmit(event) {
   const submitButton = document.getElementById('submitEmailBtn');
   const actionUrl = form.getAttribute('action');
   
-  // Mengubah status tombol saat data dikirim
   submitButton.disabled = true;
   submitButton.innerText = "Mengirim...";
   
-  // Mengirim data ke Google Sheets di latar belakang
   fetch(actionUrl, { method: 'POST', body: new FormData(form)})
     .then(response => {
        alert("Puji Tuhan, pesan Anda berhasil terkirim dan tercatat di dokumen Google Sheets pengurus!");
-       form.reset(); // Mengosongkan form kembali setelah sukses
+       form.reset(); 
     })
     .catch(error => {
        alert("Terjadi kesalahan saat mengirim pesan. Silakan coba lagi atau gunakan opsi Kirim via WA.");
@@ -542,7 +554,6 @@ function handleFormSubmit(event) {
 }
 function toggleAccordion(element) {var item = element.parentElement;item.classList.toggle('active');}
 </script>
-
 
 <footer class="footer">
 <p>© 2026 MPD 5 Gereja Beth‑El Tabernakel</p>
